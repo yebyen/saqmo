@@ -1,0 +1,53 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: saqmo
+  namespace: default
+  labels:
+    app.kubernetes.io/instance: saqmo
+spec:
+  ports:
+  - name: ssh
+    port: 22
+    targetPort: 22
+  selector:
+    app: saqmo
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/instance: saqmo
+    app.kubernetes.io/name: saqmo-ssh
+    app.kubernetes.io/part-of: saqmo
+    app.kubernetes.io/version: v1
+  name: saqmo
+  namespace: default
+  annotations:
+    fluxcd.io/automated: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: saqmo
+  template:
+    metadata:
+      annotations:
+      labels:
+        app: saqmo
+    spec:
+      containers:
+      - command: ["/sbin/my_init"]
+        imagePullPolicy: IfNotPresent
+        image: quay.io/kingdonb/saqmo:irssi
+        securityContext:
+          privileged: true
+        name: saqmo
+        ports:
+        - containerPort: 22
+          name: ssh
+        resources:
+          requests:
+            cpu: 100m
