@@ -41,7 +41,7 @@ spec:
       containers:
       - command: ["/sbin/my_init"]
         imagePullPolicy: IfNotPresent
-        image: quay.io/kingdonb/saqmo:irssi
+        image: quay.io/kingdonb/saqmo:irssi2
         securityContext:
           privileged: true
         name: saqmo
